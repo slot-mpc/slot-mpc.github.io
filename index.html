@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Goal-Conditioned Model Predictive Control with Object-Centric Representations.">
+  <meta name="keywords" content="Slot-MPC, MPC, World Models">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slot-MPC: Goal-Conditioned Model Predictive Control with Object-Centric Representations</title>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.ico">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">Slot-MPC: Goal-Conditioned Model Predictive Control with
+              Object-Centric Representations</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                Anonymous Authors
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Under Review</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="https://github.com" class="external-link disabled button is-normal is-rounded is-light">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (coming soon)</span>
+                  </a>
+                </span>
+                <!--Data Link. -->
+                <span class="link-block">
+                  <a href="https://huggingface.co" class="external-link disabled button is-normal is-rounded is-light">
+                    <span class="icon">
+                      <i class="far fa-images"></i>
+                    </span>
+                    <span>Datasets (coming soon)</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <figure class="image is-fullwidth" style="display: flex; justify-content: center;">
+          <img src="./static/images/teaser.png" alt="Slot-MPC overview" , style="width: 60%;">
+        </figure>
+        <br />
+        <h2 class="subtitle has-text-centered">
+          Slot-MPC parses an image into object representations, called slots, and then predicts the future objects
+          states over the horizon H using an object-centric world model (cOCVP) conditioned on actions.
+          The goal image is also parsed into its object representations and actions are optimized by minimizing the
+          distance in slot space.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Predictive world models enable agents to model scene dynamics and reason about the consequences of their
+              actions.
+              Inspired by human perception, object-centric world models capture scene dynamics using object-level
+              representations, which can be used for downstream applications such as action planning.
+              However, most object-centric world models and reinforcement learning (RL) approaches learn reactive
+              policies that are fixed at inference time, limiting generalization to novel situations.
+            </p>
+            <p>
+              We propose Slot-MPC, an object-centric world modeling framework that
+              enables planning through Model Predictive Control (MPC).
+              Slot-MPC leverages vision encoders to learn slot-based representations, which encode individual objects in
+              the scene, and uses these structured representations to learn an action-conditioned object-centric
+              dynamics model.
+              At inference time, the learned dynamics model enables action planning via MPC, allowing agents to adapt to
+              previously unseen situations.
+            </p>
+            <p>
+              Since the learned world model is differentiable, we can use gradient-based MPC to directly optimize
+              actions, which is computationally more efficient than relying on gradient-free, sampling-based MPC
+              methods.
+              Experiments on simulated robotic manipulation tasks show that Slot-MPC
+              improves both task performance and planning efficiency compared to non-object-centric world model
+              baselines.
+              In the considered offline setting with limited state-action coverage, we find that gradient-based MPC
+              performs better than gradient-free, sampling-based MPC.
+              Our results demonstrate that explicitly structured, object-centric representations provide a strong
+              inductive bias for controllable and generalizable decision-making.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+    </div>
+  </section>
+
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Gradient-Based Model Predictive Control with Slot-based Representations</h2>
+          <div class="content has-text-justified">
+            <p>
+              Slot-MPC uses a <em>Scene Parsing</em> model to decompose images into object representations, called
+              slots.
+            </p>
+            <p>
+              A <em>Conditional Object-Centric Predictor</em> autoregressively forecasts future object states over the
+              prediction horizon H, conditioned on the initial parsed object slots and an action sequence, which can be
+              randomly initialized or produced by a learned policy, for example.
+            </p>
+            <p>
+              Given a goal image, the predicted slots at time step T = t + H and the goal slots obtained by parsing the
+              goal image are used to optimize the action sequence by minimizing the distance between predicted and goal
+              object configurations in slot space.
+            </p>
+            <p>
+              We perform local trajectory optimization with a latent object-centric dynamics model. Instead of sampling
+              hundreds or thousands of action sequences at each step as done by gradient-free, sampling-based methods
+              such
+              as the Cross-Entropy Method (CEM) or Model Predictive Path Integral (MPPI), Slot-MPC considers a single
+              trajectory sampled from a
+              policy prior and optimizes the action sequence by using gradient descent. The
+              first action is applied to the environment, and the procedure is repeated for the next time
+              step.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Comparison to Baselines</h2>
+          <div class="content has-text-justified">
+            <p>
+              For our experiments, we evaluate our proposed approach on four robotic manipulation environments from
+              Meta-World and Robosuite.
+              We use only visual observations in all environments and do not rely on additional inputs such as
+              proprioceptive states.
+            </p>
+            <p>
+              We compare Slot-MPC against established baselines for both online and offline reinforcement learning,
+              including goal-conditioned behavior cloning (GC-BC), Dreamer-v3, and DINO-WM.
+            </p>
+            <p>
+              Our evaluation protocol differs from the procedure used by DINO-WM, which only considers short randomly
+              sampled sub-trajectories. Instead, we evaluate full episodes, which better reflects long-horizon planning
+              performance and task completion.
+            </p>
+          </div>
+
+          <figure class="image is-fullwidth" style="display: flex; justify-content: center;">
+            <img src="./static/images/results.png" alt="Slot-MPC main results" , style="width: 100%;">
+          </figure>
+
+          <br />
+        </div>
+      </div>
+      <br />
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Qualitative Results</h2>
+          <div class="content has-text-justified">
+            <p>
+              On top of the quantitative evaluation, we also provide videos of the evaluation episodes for the different
+              environments when using Slot-MPC to optimize the actions at inference.
+            </p>
+          </div>
+          <h3 class="title is-4">Meta-World</h3>
+          <div class="video-grid">
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/mw-button-press-success.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Button Press Success</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/mw-button-press-failure.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Button Press Failure</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/mw-lever-pull-success.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Lever Pull Success</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/mw-lever-pull-failure.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Lever Pull Failure</figcaption>
+            </figure>
+          </div>
+          </br>
+          <h3 class="title is-4">Robosuite</h3>
+          <div class="video-grid">
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-stack-success.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Stack Success</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-stack-failure.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Stack Failure</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-square-success.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Square Success</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-square-failure.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Square Failure</figcaption>
+            </figure>
+          </div>
+          </br>
+          </br>
+          <h3 class="title is-4">DINO-WM</h3>
+          <div class="content has-text-justified">
+            <p>
+              DINO-WM fails completely for longer goal horizons. The predictions (bottom) deviate from the actual
+              environment (top, shaded) rollout. Goal images are shown on the right.
+            </p>
+          </div>
+          <div class="video-grid">
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/dino-wm/mw-button-press.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Button Press</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/dino-wm/mw-lever-pull.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Lever Pull</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/dino-wm/robosuite-stack.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Stack</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                  <source src="./static/videos/dino-wm/robosuite-square.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Square</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+      <br />
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Takeaways</h2>
+
+          <div class="content has-text-justified">
+            <ul>
+              <li>
+                We introduce Slot-MPC, a gradient-based MPC method, which uses a latent object-centric dynamics model
+                and slot-based representations for solving tasks using only visual inputs.
+              </li>
+              <li>
+                We demonstrate that previously proposed methods fail for more complex tasks that require longer planning
+                horizons and show that Slot-MPC can overcome these limitations.
+              </li>
+              <li>
+                We show that the learned slot-based representations allow for more efficient gradient-based planning
+                compared to single holistic latents.
+              </li>
+              <li>
+                Compared to patch-based DINO-WM, the object-centric slots in Slot-MPC reduce the latent feature space
+                from #Token&thinsp;×&thinsp;Feature dimensionality to #Slots&thinsp;×&thinsp;Slot dimensionality. The
+                number of slots usually
+                corresponds approximately to the number of objects in the scene. We use four slots and a slot
+                dimensionality of 128 in this work, which leads to a feature space of 4&thinsp;×&thinsp;128 compared to
+                196&thinsp;×&thinsp;384 for
+                DINO-WM. Reducing the feature space by about 99% leads to significantly faster
+                planning times even with sampling-based MPPI.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is based on the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies website</a>
+              and licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
