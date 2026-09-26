@@ -88,12 +88,12 @@
     <div class="container is-max-desktop">
       <div class="hero-body">
         <figure class="image is-fullwidth" style="display: flex; justify-content: center;">
-          <img src="./static/images/teaser.png" alt="Slot-MPC overview" , style="width: 60%;">
+          <img src="./static/images/teaser.png" alt="Slot-MPC overview" style="width: 60%;">
         </figure>
         <br />
         <h2 class="subtitle has-text-centered">
           Slot-MPC parses an image into object representations, called slots, and then predicts the future objects
-          states over the horizon H using an object-centric world model (cOCVP) conditioned on actions.
+          states over the horizon H using an object-centric world model (OC-WM) conditioned on actions.
           The goal image is also parsed into its object representations and actions are optimized by minimizing the
           distance in slot space.
         </h2>
@@ -158,7 +158,8 @@
               slots.
             </p>
             <p>
-              A <em>Conditional Object-Centric Predictor</em> autoregressively forecasts future object states over the
+              An <em>Action-Conditional Object-Centric World Model</em> autoregressively forecasts future object states
+              over the
               prediction horizon H, conditioned on the initial parsed object slots and an action sequence, which can be
               randomly initialized or produced by a learned policy, for example.
             </p>
@@ -190,17 +191,59 @@
 
       <div class="columns is-centered">
         <div class="column is-full-width">
-          <h2 class="title is-3">Comparison to Baselines</h2>
+          <h2 class="title is-3">Distances in latent space</h2>
           <div class="content has-text-justified">
             <p>
-              For our experiments, we evaluate our proposed approach on four robotic manipulation environments from
+              For our experiments, we evaluate our proposed approach on five robotic manipulation environments from
               Meta-World and Robosuite.
               We use only visual observations in all environments and do not rely on additional inputs such as
               proprioceptive states.
             </p>
             <p>
+              We analyze the learned latent space and compare the distances in holistic latent space to slot-based
+              distances. Compared to holistic latent space, slot-based distances reflect progress towards the goal
+              better and provide a smoother and more informative proxy.
+            </p>
+          </div>
+
+          <div class="video-grid cols-3">
+            <figure class="video-card">
+              <img src="./static/images/mw-button-press_mpc-costs.png" alt="MPC costs Button Press">
+              <figcaption class="caption">Button Press</figcaption>
+            </figure>
+            <figure class="video-card">
+              <img src="./static/images/mw-lever-pull_mpc-costs.png" alt="MPC costs Lever Pull">
+              <figcaption class="caption">Lever Pull</figcaption>
+            </figure>
+            <figure class="video-card">
+              <img src="./static/images/robosuite-stack_mpc-costs.png" alt="MPC costs Stack">
+              <figcaption class="caption">Stack</figcaption>
+            </figure>
+            <figure class="video-card">
+              <img src="./static/images/robosuite-square_mpc-costs.png" alt="MPC costs Square">
+              <figcaption class="caption">Square</figcaption>
+            </figure>
+            <figure class="video-card">
+              <img src="./static/images/robosuite-stack-three_mpc-costs.png" alt="MPC costs Stack Three">
+              <figcaption class="caption">Stack Three</figcaption>
+            </figure>
+          </div>
+          <br />
+        </div>
+      </div>
+      <br />
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Comparison to Baselines</h2>
+          <div class="content has-text-justified">
+            <p>
+              Next, we evaluate whether the promising characteristics of the slot-based latent distances shown before
+              lead to a better planning performance.
+            </p>
+            <p>
               We compare Slot-MPC against established baselines for both online and offline reinforcement learning,
-              including goal-conditioned behavior cloning (GC-BC), Dreamer-v3, and DINO-WM.
+              including goal-conditioned behavior cloning (GC-BC), Dreamer-v3, DINO-WM, LeWM, EC-Diffuser and LPWM.
             </p>
             <p>
               Our evaluation protocol differs from the procedure used by DINO-WM, which only considers short randomly
@@ -210,7 +253,7 @@
           </div>
 
           <figure class="image is-fullwidth" style="display: flex; justify-content: center;">
-            <img src="./static/images/results.png" alt="Slot-MPC main results" , style="width: 100%;">
+            <img src="./static/images/results.png" alt="Slot-MPC main results" style="width: 100%;">
           </figure>
 
           <br />
@@ -223,7 +266,8 @@
           <h2 class="title is-3">Qualitative Results</h2>
           <div class="content has-text-justified">
             <p>
-              On top of the quantitative evaluation, we also provide videos of the evaluation episodes (simulated execution) for the different
+              On top of the quantitative evaluation, we also provide videos of the evaluation episodes (simulated
+              execution) for the different
               environments when using Slot-MPC to optimize the actions at inference.
             </p>
           </div>
@@ -231,7 +275,7 @@
           <div class="video-grid">
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/mw-button-press-success.mp4" type="video/mp4">
                 </video>
               </div>
@@ -239,7 +283,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/mw-button-press-failure.mp4" type="video/mp4">
                 </video>
               </div>
@@ -247,7 +291,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/mw-lever-pull-success.mp4" type="video/mp4">
                 </video>
               </div>
@@ -255,19 +299,19 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/mw-lever-pull-failure.mp4" type="video/mp4">
                 </video>
               </div>
               <figcaption class="caption">Lever Pull Failure</figcaption>
             </figure>
           </div>
-          </br>
+          <br />
           <h3 class="title is-4">Robosuite</h3>
-          <div class="video-grid">
+          <div class="video-grid task-columns">
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/robosuite-stack-success.mp4" type="video/mp4">
                 </video>
               </div>
@@ -275,7 +319,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/robosuite-stack-failure.mp4" type="video/mp4">
                 </video>
               </div>
@@ -283,7 +327,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/robosuite-square-success.mp4" type="video/mp4">
                 </video>
               </div>
@@ -291,15 +335,31 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/slot_mpc/robosuite-square-failure.mp4" type="video/mp4">
                 </video>
               </div>
               <figcaption class="caption">Square Failure</figcaption>
             </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-stack-three-success.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Stack Three Success</figcaption>
+            </figure>
+            <figure class="video-card">
+              <div class="video-wrap">
+                <video class="img" muted autoplay loop controls>
+                  <source src="./static/videos/slot_mpc/robosuite-stack-three-failure.mp4" type="video/mp4">
+                </video>
+              </div>
+              <figcaption class="caption">Stack Three Failure</figcaption>
+            </figure>
           </div>
-          </br>
-          </br>
+          <br />
+          <br />
           <h3 class="title is-4">DINO-WM</h3>
           <div class="content has-text-justified">
             <p>
@@ -310,7 +370,7 @@
           <div class="video-grid">
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/dino-wm/mw-button-press.mp4" type="video/mp4">
                 </video>
               </div>
@@ -318,7 +378,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/dino-wm/mw-lever-pull.mp4" type="video/mp4">
                 </video>
               </div>
@@ -326,7 +386,7 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/dino-wm/robosuite-stack.mp4" type="video/mp4">
                 </video>
               </div>
@@ -334,12 +394,117 @@
             </figure>
             <figure class="video-card">
               <div class="video-wrap">
-                <video class="img" style="width: 100%; height: auto;" muted autoplay loop controls>
+                <video class="img" muted autoplay loop controls>
                   <source src="./static/videos/dino-wm/robosuite-square.mp4" type="video/mp4">
                 </video>
               </div>
               <figcaption class="caption">Square</figcaption>
             </figure>
+          </div>
+        </div>
+      </div>
+      <br />
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Distribution Shifts</h2>
+          <div class="content has-text-justified">
+            <p>
+              Furthermore, we evaluate Slot-MPC and its variant without object-centric representations under different
+              visual shifts
+              on Meta-World Button Press. Slot-MPC retains the highest success rates while its variants without MPC and
+              without object-centric representations suffer from a larger performance degradation.
+            </p>
+          </div>
+          <figure class="image is-fullwidth" style="display: flex; justify-content: center;">
+            <img src="./static/images/distribution-shifts.png" alt="Slot-MPC distribution shifts results" style="width: 100%;">
+          </figure>
+          <br />
+          <div class="group-grid">
+            <div class="video-group">
+              <h3 class="group-title">Camera view</h3>
+              <div class="video-grid cols-2">
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/slot-mpc_camera-view.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">Slot-MPC</figcaption>
+                </figure>
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/non-oc_camera-view.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">w/o object-centric representations</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="video-group">
+              <h3 class="group-title">Lighting</h3>
+              <div class="video-grid cols-2">
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/slot-mpc_lighting.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">Slot-MPC</figcaption>
+                </figure>
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/non-oc_lighting.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">w/o object-centric representations</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="video-group">
+              <h3 class="group-title">Object color</h3>
+              <div class="video-grid cols-2">
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/slot-mpc_object-color.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">Slot-MPC</figcaption>
+                </figure>
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/non-oc_object-color.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">w/o object-centric representations</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="video-group">
+              <h3 class="group-title">Transparent robot arm</h3>
+              <div class="video-grid cols-2">
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/slot-mpc_transparent-arm.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">Slot-MPC</figcaption>
+                </figure>
+                <figure class="video-card">
+                  <div class="video-wrap">
+                    <video class="img" muted autoplay loop controls>
+                      <source src="./static/videos/slot_mpc/distribution_shifts/non-oc_transparent-arm.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption class="caption">w/o object-centric representations</figcaption>
+                </figure>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -367,7 +532,8 @@
                 Compared to patch-based DINO-WM, the object-centric slots in Slot-MPC reduce the latent feature space
                 from #Token&thinsp;×&thinsp;Feature dimensionality to #Slots&thinsp;×&thinsp;Slot dimensionality. The
                 number of slots usually
-                corresponds approximately to the number of objects in the scene. We use four slots and a slot
+                corresponds approximately to the number of objects in the scene. We use four slots (five for Stack
+                Three) and a slot
                 dimensionality of 128 in this work, which leads to a feature space of 4&thinsp;×&thinsp;128 compared to
                 196&thinsp;×&thinsp;384 for
                 DINO-WM. Reducing the feature space by about 99% leads to significantly faster
